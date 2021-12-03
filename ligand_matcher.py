@@ -2,7 +2,7 @@
 
 # Hailey Wallace
 # October 25, 2021
-# Parses out all functional groups that COMBS recognizes from ligand of interest
+# Parses out all of the functional groups that COMBS recognizes from ligand of interest
 
 import sys, argparse, os, re, subprocess
 import pandas as pd
