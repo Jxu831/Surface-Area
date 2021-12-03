@@ -1,0 +1,3 @@
+HG,CYS
+SG,CYS
+CB,CYS
