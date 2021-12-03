@@ -1,6 +1,6 @@
 # Ligand Mapping 
-# Hailey Wallace 
-# Version 1.0 - October 25, 2021
+Hailey Wallace 
+Version 1.0 - October 25, 2021
 #
 # This project contains the ongoing development of a COMBS2-compatible application 
 # that will automatically map out COMBS2 functional groups (CG). The output is a 
