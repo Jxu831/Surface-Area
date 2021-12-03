@@ -1,5 +1,5 @@
 # Ligand Mapping 
-Hailey Wallace 
+## Hailey Wallace 
 Version 1.0 - October 25, 2021
 #
 # This project contains the ongoing development of a COMBS2-compatible application 
