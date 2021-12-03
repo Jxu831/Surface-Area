@@ -1,11 +1,11 @@
 # Ligand Mapping 
 ## Hailey Wallace 
 Version 1.0 - October 25, 2021
-#
-# This project contains the ongoing development of a COMBS2-compatible application 
-# that will automatically map out COMBS2 functional groups (CG). The output is a 
-# 'ligand map file' crucial for COMBS2 input and allows for the proper placement and 
-# evaluation of van der Meers (vdMs).
+
+ This project contains the ongoing development of a COMBS2-compatible application 
+ that will automatically map out COMBS2 functional groups (CG). The output is a 
+ 'ligand map file' crucial for COMBS2 input and allows for the proper placement and 
+ evaluation of van der Meers (vdMs).
 #
 #
 # Convergent motifs for binding sites 2.0, or COMBS2, is an open-source package for 
