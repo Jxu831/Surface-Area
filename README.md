@@ -6,18 +6,16 @@ Version 1.0 - October 25, 2021
  that will automatically map out COMBS2 functional groups (CG). The output is a 
  'ligand map file' crucial for COMBS2 input and allows for the proper placement and 
  evaluation of van der Meers (vdMs).
-#
-#
-# Convergent motifs for binding sites 2.0, or COMBS2, is an open-source package for 
-# interfacial protein design created by Nick Polizzi. Download the full package here:
-# https://github.com/npolizzi/Combs2
-#
-#
-# Usage:
-#
-# Install this application by either manual downloading via Github or by cloning this 
-# repository with the command:
-# git clone https://github.com/haileywallace/ligand_mapping.git
+
+ Convergent motifs for binding sites 2.0, or COMBS2, is an open-source package for 
+ interfacial protein design created by Nick Polizzi. Download the full package here:
+ https://github.com/npolizzi/Combs2
+
+## Usage:
+
+Install this application by either manual downloading via Github or by cloning this 
+repository with the command:
+### git clone https://github.com/haileywallace/ligand_mapping.git
 #
 # Keep this application up-to-date with:
 # git pull https://github.com/haileywallace/ligand_mapping.git
