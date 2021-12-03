@@ -188,36 +188,6 @@ if args.image:
 # Precise atom names are crucial for COMBS
 ########################################
 # Extract coordinates and match with group name
-#def func_coord(coords):
-#    for line in coords:
-        # group name
-#        a = line.split(" ")
-#        name = str(a[0])
-        # x, y, z coords
-#        a0 = str(line).split("|")
-#        a1 = a0[1]+','+name
-#        a2 = re.sub('[()]','', a1)
-#        xyz = re.sub(';', ','+name+'\n', a2)
-#        print(xyz+'\n')
-
-# Open previously output file, assign it to variable
-#if args.coords == "none":
-#    pass
-#elif args.coords == None:
-#    f = open("ligand_match_coords.txt","r")
-#else:
-#    f = open(args.coords, "r")
-
-
-# Proceed if variable is assigned (if file was created)
-#try:
-#    f
-#except NameError:
-#    print("...Finished!")
-#else:
-#    print(f)
-#    process = subprocess.run(['./ligand_support.sh','-l',input,'-i',f])
-
 
 if args.coords == "none":
     elapsed_time_secs = time.time() - start_time
