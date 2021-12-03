@@ -8,8 +8,7 @@ Version 1.0 - October 25, 2021
  evaluation of van der Meers (vdMs).
 
  Convergent motifs for binding sites 2.0, or COMBS2, is an open-source package for 
- interfacial protein design created by Nick Polizzi. Download the full package [here]
- (https://github.com/npolizzi/Combs2).
+ interfacial protein design created by Nick Polizzi. Download the full package [here](https://github.com/npolizzi/Combs2).
 
 ## Usage:
 
@@ -27,8 +26,7 @@ If COMBS is already installed on your machine, activate the env_combs_(platform)
 environment while using this package. 
 
 If you are running this by itself for benchmarking purposes, install and 
-activate an RDKit environment. RDKit instructions [here]
-(https://www.rdkit.org/docs/Install.html).
+activate an RDKit environment. RDKit instructions [here](https://www.rdkit.org/docs/Install.html).
 
 Command to create a new environment with RDKit installed:
 ```
