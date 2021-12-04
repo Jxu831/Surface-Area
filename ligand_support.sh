@@ -1,6 +1,9 @@
 #!/bin/bash
+<<<<<<< HEAD
 # Hailey Wallace
 
+=======
+>>>>>>> 21f961898be9d57b97e254f8dfb4b9a3a3ea830c
 rm tmp.csv
 
 # Command line options
@@ -36,6 +39,7 @@ s=1
 declare -a arr
 while read -r line
 do
+<<<<<<< HEAD
     # Increase counter (i) if there is an empty line. Set s to 1.
     [[ $line == "" ]] && ((i++)) && s=1 && continue
     # If s=0, then it is the next block.
@@ -43,6 +47,19 @@ do
     [[ $s == 0 ]] && arr[$i]="${arr[$i]}
 $line" || {
             # Otherwise the value of array is current line & s=0
+=======
+    # If we find an empty line, then we increase the counter (i),
+    # set the flag (s) to one, and skip to the next line
+    [[ $line == "" ]] && ((i++)) && s=1 && continue
+
+    # If the flag (s) is zero, then we are not in a new line of the block
+    # so we set the value of the array to be the previous value concatenated
+    # with the current line
+    [[ $s == 0 ]] && arr[$i]="${arr[$i]}
+$line" || {
+            # Otherwise we are in the first line of the block, so we set the value
+            # of the array to the current line, and then we reset the flag (s) to zero
+>>>>>>> 21f961898be9d57b97e254f8dfb4b9a3a3ea830c
             arr[$i]="$line"
             s=0;
     }
@@ -342,4 +359,8 @@ else
    done < tmp10.csv > $o
 fi
 
+<<<<<<< HEAD
 #rm tmp.csv ; rm tmp10.csv ; rm tmp8.csv ; rm tmp9.csv ; rm tmp_cg_coordinates.csv
+=======
+rm tmp.csv ; rm tmp10.csv ; rm tmp8.csv ; rm tmp9.csv ; rm tmp_cg_coordinates.csv
+>>>>>>> 21f961898be9d57b97e254f8dfb4b9a3a3ea830c
