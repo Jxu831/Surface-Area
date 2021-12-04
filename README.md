@@ -26,7 +26,7 @@ If COMBS is already installed on your machine, activate the env_combs_(platform)
 environment while using this package. 
 
 If you are running this by itself for benchmarking purposes, install and 
-activate an RDKit environment. RDKit instructions [here](https://www.rdkit.org/docs/Install.html).
+activate an RDKit environment. RDKit instructions from [here](https://www.rdkit.org/docs/Install.html) are copied  below:
 
 Command to create a new environment with RDKit installed:
 ```
