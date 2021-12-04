@@ -1,7 +1,6 @@
 #!/bin/bash
 # Hailey Wallace
 
-rm tmp.csv
 
 # Command line options
 while getopts ":hi:l:o:" option; do
@@ -22,13 +21,17 @@ while getopts ":hi:l:o:" option; do
 done
 
 echo "Making ligand CG file..."
-# Change the ligand coordinate file into a tab delimited tmp.csv file
+
+# Change the ligand coordinate file into a tab delimited tmp_LG.csv file
 while read -r p; do
   group=$(echo $p | awk -F'(' '{print $1}')
   echo $p | awk -F'|' '{print $2}' | sed 's/\;/\n/g' | \
   awk -F '\t' -v group2=$group '{print $0","group2}'| \
-  sed -e 's/(/\n/g' | sed -e 's/)//' >> tmp.csv #sed 's/,/\t/g'
+  sed -e 's/(/\n/g' | sed -e 's/)//' >> tmp_LG.csv
 done < $i
+
+# If no substructures are found, exit script here
+[ -s tmp_LG.csv ] || echo "ERROR: No combs groups found." #&& exit 1
 
 # Read the coordinate file by chunks separated by newline; feed into array
 i=1
@@ -36,7 +39,6 @@ s=1
 declare -a arr
 while read -r line
 do
-
     # Increase counter (i) if there is an empty line. Set s to 1.
     [[ $line == "" ]] && ((i++)) && s=1 && continue
     # If s=0, then it is the next block.
@@ -47,13 +49,17 @@ $line" || {
             arr[$i]="$line"
             s=0;
     }
-done < tmp.csv
+done < tmp_LG.csv
 
 # Reading in corresponding CG atoms
 conh2=$(echo "combs_groups/conh2_ASN.txt" "combs_groups/conh2_GLN.txt")
 bbcco=$(echo "combs_groups/bbcco_GLY.txt" "combs_groups/bbcco_ALA.txt" "combs_groups/bbcco_PRO.txt")
-ph1=$(echo "combs_groups/ph_PHE_1.txt")
-ph2=$(echo "combs_groups/ph_PHE_2.txt") # ph numbering in opposite direction
+ph1=$(echo "combs_groups/ph_PHE_1.txt") # 6 rotations
+ph2=$(echo "combs_groups/ph_PHE_2.txt")
+ph3=$(echo "combs_groups/ph_PHE_3.txt")
+ph4=$(echo "combs_groups/ph_PHE_4.txt")
+ph5=$(echo "combs_groups/ph_PHE_5.txt")
+ph6=$(echo "combs_groups/ph_PHE_6.txt")
 bb_cnh=$(echo "combs_groups/bb_cnh_GLY.txt" "combs_groups/bb_cnh_LYS.txt" "combs_groups/bb_cnh_LYS.txt")
 ccn=$(echo "combs_groups/ccn_LYS.txt")
 ccoh=$(echo "combs_groups/ccoh_SER.txt" "combs_groups/ccoh_THR.txt")
@@ -97,17 +103,43 @@ do
          printf '%s\n' $i | paste -d',' - $a
       done
 
-# ph groups
-   elif [[ "$i" == *"ph"* ]]; then
+# ph groups - 6 rotations of symmetry -- each one also has a mirror image
+elif [[ "$i" == *"ph"* ]] && [[ "$i" != *"phenol"* ]]; then
       echo "################"
-      for a in $ph1; do
-         printf '%s\n' $i | paste -d',' - $a
+      for a1 in $ph1; do
+         printf '%s\n' $i | paste -d',' - $a1
+         echo "################"
+         printf '%s\n' $i | tail -r | paste -d',' - $a1
       done
-
-# ph groups - opposite direction
       echo "################"
-      for a in $ph2; do
-         printf '%s\n' $i | paste -d',' - $a
+      for a2 in $ph2; do
+         printf '%s\n' $i | paste -d',' - $a2
+         echo "################"
+         printf '%s\n' $i | tail -r | paste -d',' - $a2
+      done
+      echo "################"
+      for a3 in $ph3; do
+         printf '%s\n' $i | paste -d',' - $a3
+         echo "################"
+         printf '%s\n' $i | tail -r | paste -d',' - $a3
+      done
+      echo "################"
+      for a4 in $ph4; do
+         printf '%s\n' $i | paste -d',' - $a4
+         echo "################"
+         printf '%s\n' $i | tail -r | paste -d',' - $a4
+      done
+      echo "################"
+      for a5 in $ph5; do
+         printf '%s\n' $i | paste -d',' - $a5
+         echo "################"
+         printf '%s\n' $i | tail -r | paste -d',' - $a5
+      done
+      echo "################"
+      for a6 in $ph6; do
+         printf '%s\n' $i | paste -d',' - $a6
+         echo "################"
+         printf '%s\n' $i | tail -r | paste -d',' - $a6
       done
 
 # bb_cnh groups
@@ -166,24 +198,21 @@ do
          printf '%s\n' $i | paste -d',' - $a
       done
 
-# hid groups
-   elif [[ "$i" == *"hid"* ]]; then
-      echo "################"
-      for a in $hid; do
-         printf '%s\n' $i | paste -d',' - $a
-      done
-
-# hie groups
-   elif [[ "$i" == *"hie"* ]]; then
-      echo "################"
-      for a in $hie; do
-         printf '%s\n' $i | paste -d',' - $a
-      done
-
 # hip groups
    elif [[ "$i" == *"hip"* ]]; then
       echo "################"
       for a in $hip; do
+         printf '%s\n' $i | paste -d',' - $a
+      done
+
+# hie and hid groups
+   elif [[ "$i" == *"his"* ]]; then
+      echo "################"
+      for a in $hie; do
+         printf '%s\n' $i | paste -d',' - $a
+      done
+      echo "################"
+      for a in $hid; do
          printf '%s\n' $i | paste -d',' - $a
       done
 
@@ -194,16 +223,13 @@ do
          printf '%s\n' $i | paste -d',' - $a
       done
 
-# phenol groups
+# phenol groups - 6 rotations
    elif [[ "$i" == *"phenol"* ]]; then
       echo "################"
       for a in $phenol1; do
          printf '%s\n' $i | paste -d',' - $a
       done
-
-# phenol groups - opposite direction
-   #elif [[ "$i" == *"phenol"* ]]; then
-      echo "################ - opposite direction"
+      echo ""
       for a in $phenol2; do
          printf '%s\n' $i | paste -d',' - $a
       done
@@ -249,7 +275,7 @@ do
       echo "PARSING ERROR: no combs groups in CG coordinate file. Re-run ligand_matcher.py"
    fi
 
-done > tmp_cg_coordinates.csv
+done > tmp_LG_cg_coordinates.csv
 
 # turn this output csv into a second array to work with CG in 'chunks' aka multiple arrays
 p=1
@@ -263,10 +289,10 @@ $line" || {
             arr2[$p]="$line"
             k=0;
     }
-done < tmp_cg_coordinates.csv
+done < tmp_LG_cg_coordinates.csv
 
-#rm tmp8.csv
-echo " \n" > tmp8.csv
+#rm tmp_LG8.csv
+echo " \n" > tmp_LG8.csv
 ligand_code=$(grep -A1 'ATOM' $l | grep -v 'ATOM' | awk -F' ' '{print $8}' | uniq)
 
 COUNTER=0
@@ -288,12 +314,12 @@ for v in "${arr2[@]}"; do
    done
    echo ""
 
-done > tmp8.csv
+done > tmp_LG8.csv
 
-#rm tmp9.csv
-awk '{print $6,$2}' tmp8.csv | sort | uniq | awk '{if(a!=$1) {a=$1; printf "\n%s%s",$0,FS} else {a=$1;$1="";printf $0 }} END {printf "\n"}' | sed '/^$/d' | sed 's/ /,/' > tmp9.csv
+#rm tmp_LG9.csv
+awk '{print $6,$2}' tmp_LG8.csv | sort | uniq | awk '{if(a!=$1) {a=$1; printf "\n%s%s",$0,FS} else {a=$1;$1="";printf $0 }} END {printf "\n"}' | sed '/^$/d' | sed 's/ /,/' > tmp_LG9.csv
 
-#rm tmp10.csv
+#rm tmp_LG10.csv
 
 awk -F, '
 { # first pass
@@ -315,7 +341,7 @@ END {  # second pass
     }
   }
 }
-' tmp9.csv > tmp10.csv
+' tmp_LG9.csv > tmp_LG10.csv
 
 if [ -z "$o" ]; then
    if [ -f "ligand.txt" ]; then
@@ -331,17 +357,17 @@ if [ -z "$o" ]; then
    while read -r line; do
       group_num=$(echo $line | awk -F' ' '{print $1}')
       cluster_num=$(echo $line | awk -F' ' '{print $NF}')
-      awk -v a="$group_num" -v b="$cluster_num" 'a == $6 {print $0,b}' tmp8.csv
+      awk -v a="$group_num" -v b="$cluster_num" 'a == $6 {print $0,b}' tmp_LG8.csv
       echo ""
-   done < tmp10.csv > ligand.txt
+   done < tmp_LG10.csv > ligand.txt
 else
    while read -r line; do
       group_num=$(echo $line | awk -F' ' '{print $1}')
       cluster_num=$(echo $line | awk -F' ' '{print $NF}')
-      awk -v a="$group_num" -v b="$cluster_num" 'a == $6 {print $0,b}' tmp8.csv
+      awk -v a="$group_num" -v b="$cluster_num" 'a == $6 {print $0,b}' tmp_LG8.csv
       echo ""
-   done < tmp10.csv > $o
+   done < tmp_LG10.csv > $o
 fi
 
 
-#rm tmp.csv ; rm tmp10.csv ; rm tmp8.csv ; rm tmp9.csv ; rm tmp_cg_coordinates.csv
+rm tmp_LG*
