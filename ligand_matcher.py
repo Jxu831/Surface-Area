@@ -4,16 +4,18 @@
 # October 25, 2021
 # Parses out all functional groups that COMBS recognizes from ligand of interest
 
+# Import time to track script runtime
+import time
+from datetime import timedelta
+start_time = time.time()
+
+# Import os, sys, etc... + rdkit!
 import sys, argparse, os, re, subprocess
 import pandas as pd
 from rdkit import Chem, RDConfig
 from rdkit.Chem import Draw, ChemicalFeatures, rdchem, rdMolDescriptors
 from rdkit.Chem.Draw import IPythonConsole, rdMolDraw2D
-from IPython.display import SVG
 
-import time
-from datetime import timedelta
-start_time = time.time()
 
 ####################
 #os.remove("ligand_CG_coords.txt")
@@ -90,6 +92,8 @@ isopropyl = Chem.MolFromSmarts("C([H])([H])([H])[c,C]C([H])([H])[H]")
 pro = Chem.MolFromSmarts("[C,c]1([H])([H])[C,c]([H])([H])**[C,c]1([H])([H])")
 ch3 = Chem.MolFromSmarts("[*][C,c]C([H])([H])[H]")
 
+# Sort this list with the largest CG first and smallest last.
+# This is so the CG ligand coverage number starts with the largest CG. 
 func_groups = [conh2, bb_cco, ph, bb_cnh, ccn, ccoh, coh, coo, csc, csh, gn, his, hip, indole, phenol, isopropyl, pro, ch3]
 
 ########################################
@@ -98,8 +102,7 @@ func_groups = [conh2, bb_cco, ph, bb_cnh, ccn, ccoh, coh, coo, csc, csh, gn, his
 input = args.ligand
 
 # Import mol2 ligand file
-start = Chem.MolFromMol2File(input)
-file = Chem.AddHs(start, addCoords=True, addResidueInfo=True)
+file = Chem.MolFromMol2File(input, removeHs=False) # Preserve the original Hs
 
 # SMARTS pattern of your input mol2
 ligand = Chem.MolToSmarts(file)

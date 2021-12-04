@@ -31,7 +31,7 @@ while read -r p; do
 done < $i
 
 # If no substructures are found, exit script here
-[ -s tmp_LG.csv ] || echo "ERROR: No combs groups found." #&& exit 1
+[[ ! -f tmp_LG.csv ]] && echo "ERROR: No combs groups found." && exit 1
 
 # Read the coordinate file by chunks separated by newline; feed into array
 i=1
@@ -60,7 +60,7 @@ ph3=$(echo "combs_groups/ph_PHE_3.txt")
 ph4=$(echo "combs_groups/ph_PHE_4.txt")
 ph5=$(echo "combs_groups/ph_PHE_5.txt")
 ph6=$(echo "combs_groups/ph_PHE_6.txt")
-bb_cnh=$(echo "combs_groups/bb_cnh_GLY.txt" "combs_groups/bb_cnh_LYS.txt" "combs_groups/bb_cnh_LYS.txt")
+bb_cnh=$(echo "combs_groups/bb_cnh_GLY.txt" "combs_groups/bb_cnh_LYS.txt" "combs_groups/bb_cnh_ALA.txt")
 ccn=$(echo "combs_groups/ccn_LYS.txt")
 ccoh=$(echo "combs_groups/ccoh_SER.txt" "combs_groups/ccoh_THR.txt")
 coh=$(echo "combs_groups/coh_SER.txt" "combs_groups/coh_THR.txt")
@@ -305,13 +305,14 @@ for v in "${arr2[@]}"; do
       other_info=$(echo $i | awk -F',' '{print $6,$5,$4}')
 
       # if the coordinate is in the ligand file, then add it to the output file
-      # this removes the excess hydrogens atoms from rdkit
+      # this removes the excess hydrogens atoms not in original file
 
       if grep -Fqe $x_coord $l
       then
          echo $ligand_code $test $other_info $COUNTER
       fi
-   done
+   done > tmp_LG8_unsorted.csv
+   cat tmp_LG8_unsorted.csv | sort -k3,4
    echo ""
 
 done > tmp_LG8.csv
@@ -343,13 +344,16 @@ END {  # second pass
 }
 ' tmp_LG9.csv > tmp_LG10.csv
 
+
+# Creating the ligand.txt files
+
 if [ -z "$o" ]; then
    if [ -f "ligand.txt" ]; then
       if [ -d "./old_files" ]; then
-         echo "Moving previous ligand.txt file to ./old_files/"
+         echo "Ligand.txt already exists. Moving old file to old_files directory."
          mv ligand.txt ./old_files/
       else
-         echo "Creating and moving previous ligand.txt file to ./old_files/"
+         echo "Ligand.txt already exists. Moving old file to old_files directory."
          mkdir ./old_files
          mv ligand.txt ./old_files/
       fi
@@ -361,6 +365,16 @@ if [ -z "$o" ]; then
       echo ""
    done < tmp_LG10.csv > ligand.txt
 else
+  if [ -f "$o" ]; then
+     if [ -d "./old_files" ]; then
+        echo  $o "already exists. Moving old file to old_files directory."
+        mv ligand.txt ./old_files/
+     else
+        echo $o "already exists. Moving old file to old_files directory."
+        mkdir ./old_files
+        mv ligand.txt ./old_files/
+     fi
+  fi
    while read -r line; do
       group_num=$(echo $line | awk -F' ' '{print $1}')
       cluster_num=$(echo $line | awk -F' ' '{print $NF}')
@@ -369,5 +383,5 @@ else
    done < tmp_LG10.csv > $o
 fi
 
-
+# Removes the temporary files from this script that were created
 rm tmp_LG*
