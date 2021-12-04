@@ -36,3 +36,8 @@ To activate this environment:
 ```
 conda activate my-rdkit-env
 ```
+
+Make sure that you have ipython installed. To install:
+```
+pip install ipython
+```

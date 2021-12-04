@@ -34,7 +34,8 @@ if len(sys.argv)==1:
 *                     options:                          *
 *     --ligand, -l: input mol2 ligand (required)        *
 *     --ouput, -o: output name for ligand.txt file      *
-*                   "ligand.txt" if not specified       *
+*                   "ligand.txt" if not specified;      *
+*                    "none" for no ligand.txt file      *
 *     --coords, -c: output coordinate file              *
 *                   "none" for no coords/ligand file;   *
 *                   will only output number of matches  *
@@ -70,27 +71,26 @@ else:
 ########################################
 # Functional groups that COMBS recognizes
 ########################################
-conh2 = Chem.MolFromSmarts("[C,c]C(=O)N([H])[H]")
+conh2 = Chem.MolFromSmarts("[C,c]C(=O)N([H])")
 bb_cco = Chem.MolFromSmarts("[N,n,C,c][C,c;X3](=O)[!O]")
-ph = Chem.MolFromSmarts("c1([H])c([H])c([H])c([H])c([H])c1")
-bb_cnh = Chem.MolFromSmarts("[CX4][N,n;X3;H1;R0][H]")
-ccn = Chem.MolFromSmarts("C([H])([H])C([H])([H])N([H])([H])[H]")
+ph = Chem.MolFromSmarts("c1ccccc1")
+bb_cnh = Chem.MolFromSmarts("[C,c][N][H]")
+ccn = Chem.MolFromSmarts("[c,C][C,c]N([H])([H])")
 ccoh = Chem.MolFromSmarts("[C,c][CX4]O[H]")
-coh = Chem.MolFromSmarts("[CX4]O[H]")
-coo = Chem.MolFromSmarts("CC(=O)O")
-csc = Chem.MolFromSmarts("C([H])([H])SC([H])([H])[H]")
-csh = Chem.MolFromSmarts("CS[H]")
-gn = Chem.MolFromSmarts("[C,c][N,n]([H])[C,c](~N([H])[H])N([H])[H]")
-hid = Chem.MolFromSmarts("c1c([H])[n;X2]c([H])n1([H])")
-hie = Chem.MolFromSmarts("c1c([H])n([H])c([H])[n;X2]1")
-hip = Chem.MolFromSmarts("c1c([H])n([H])c([H])n1([H])")
-indole = Chem.MolFromSmarts("c21c(c(c(c(c1n(c(c2)[H])[H])[H])[H])[H])[H]")
-phenol = Chem.MolFromSmarts("c1(c(c(c(c(c1)[H])[H])O[H])[H])[H]")
-isopropyl = Chem.MolFromSmarts("C([H])([H])([H])C([H])C([H])([H])[H]")
-pro = Chem.MolFromSmarts("C1([H])([H])C([H])([H])**C1([H])([H])")
-ch3 = Chem.MolFromSmarts("[C,c][C,c]C([H])([H])[H]")
+coh = Chem.MolFromSmarts("[C,c]O[H]")
+coo = Chem.MolFromSmarts("[C,c]C(=O)O")
+csc = Chem.MolFromSmarts("[c,C]([H])([H])SC([H])([H])[H]")
+csh = Chem.MolFromSmarts("[C,c]S[H]")
+gn = Chem.MolFromSmarts("[*][N,n]([H])[C,c](~N([H])[H])N([H])[H]")
+his = Chem.MolFromSmarts("c1cn([H])c[n;X2]1")
+hip = Chem.MolFromSmarts("c1cn([H])cn1([H])")
+indole = Chem.MolFromSmarts("c21ccn(c1cccc2)[H]")
+phenol = Chem.MolFromSmarts("c1cccc(c1)O[H]")
+isopropyl = Chem.MolFromSmarts("C([H])([H])([H])[c,C]C([H])([H])[H]")
+pro = Chem.MolFromSmarts("[C,c]1([H])([H])[C,c]([H])([H])**[C,c]1([H])([H])")
+ch3 = Chem.MolFromSmarts("[*][C,c]C([H])([H])[H]")
 
-func_groups = [conh2, bb_cco, ph, bb_cnh, ccn, ccoh, coh, coo, csc, csh, gn, hid, hie, hip, indole, phenol, isopropyl, pro, ch3]
+func_groups = [conh2, bb_cco, ph, bb_cnh, ccn, ccoh, coh, coo, csc, csh, gn, his, hip, indole, phenol, isopropyl, pro, ch3]
 
 ########################################
 # Setting up file and SMARTS strings
@@ -190,6 +190,11 @@ if args.image:
 # Extract coordinates and match with group name
 
 if args.coords == "none":
+    elapsed_time_secs = time.time() - start_time
+    msg = "...Finished in %s seconds." % timedelta(seconds=round(elapsed_time_secs))
+    print(msg)
+
+elif args.output =="none":
     elapsed_time_secs = time.time() - start_time
     msg = "...Finished in %s seconds." % timedelta(seconds=round(elapsed_time_secs))
     print(msg)
