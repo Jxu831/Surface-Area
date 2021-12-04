@@ -2,7 +2,7 @@
 
 # Hailey Wallace
 # October 25, 2021
-# Parses out all of the functional groups that COMBS recognizes from ligand of interest
+# Parses out all functional groups that COMBS recognizes from ligand of interest
 
 import sys, argparse, os, re, subprocess
 import pandas as pd
@@ -70,11 +70,11 @@ else:
 ########################################
 # Functional groups that COMBS recognizes
 ########################################
-conh2 = Chem.MolFromSmarts("[C,c]C(=O)N([H])")
+conh2 = Chem.MolFromSmarts("[C,c]C(=O)N([H])[H]")
 bb_cco = Chem.MolFromSmarts("[N,n,C,c][C,c;X3](=O)[!O]")
-ph = Chem.MolFromSmarts("c1ccccc1")
-bb_cnh = Chem.MolFromSmarts("[*][N,n;X3][H]")
-ccn = Chem.MolFromSmarts("[C,c][C,c]N([H])([H])[H]")
+ph = Chem.MolFromSmarts("c1([H])c([H])c([H])c([H])c([H])c1")
+bb_cnh = Chem.MolFromSmarts("[CX4][N,n;X3;H1;R0][H]")
+ccn = Chem.MolFromSmarts("C([H])([H])C([H])([H])N([H])([H])[H]")
 ccoh = Chem.MolFromSmarts("[C,c][CX4]O[H]")
 coh = Chem.MolFromSmarts("[CX4]O[H]")
 coo = Chem.MolFromSmarts("CC(=O)O")
@@ -98,8 +98,8 @@ func_groups = [conh2, bb_cco, ph, bb_cnh, ccn, ccoh, coh, coo, csc, csh, gn, hid
 input = args.ligand
 
 # Import mol2 ligand file
-file = Chem.MolFromMol2File(input)
-#file = Chem.AddHs(start, addCoords=True, addResidueInfo=True)
+start = Chem.MolFromMol2File(input)
+file = Chem.AddHs(start, addCoords=True, addResidueInfo=True)
 
 # SMARTS pattern of your input mol2
 ligand = Chem.MolToSmarts(file)
