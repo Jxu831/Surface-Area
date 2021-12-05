@@ -93,8 +93,8 @@ pro = Chem.MolFromSmarts("[C,c]1([H])([H])[C,c]([H])([H])**[C,c]1([H])([H])")
 ch3 = Chem.MolFromSmarts("[*][C,c]C([H])([H])[H]")
 
 # Sort this list with the largest CG first and smallest last.
-# This is so the CG ligand coverage number starts with the largest CG. 
-func_groups = [conh2, bb_cco, ph, bb_cnh, ccn, ccoh, coh, coo, csc, csh, gn, his, hip, indole, phenol, isopropyl, pro, ch3]
+# This is so the CG ligand coverage number starts with the largest CG.
+func_groups = [indole, phenol, ph, hip, his, gn, isopropyl, pro, ch3, csc, csh, conh2, coo, ccoh, coh, bb_cco, ccn, bb_cnh]
 
 ########################################
 # Setting up file and SMARTS strings
@@ -225,3 +225,8 @@ else:
         elapsed_time_secs = time.time() - start_time
         msg = "%s seconds" % timedelta(seconds=round(elapsed_time_secs))
         print('Finished making', args.output, msg)
+
+
+########################################
+# Read this if you need to edit the code to add more COMBS-groups!
+########################################

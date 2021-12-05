@@ -323,20 +323,21 @@ awk '{print $6,$2}' tmp_LG8.csv | sort | uniq | awk '{if(a!=$1) {a=$1; printf "\
 #rm tmp_LG10.csv
 
 awk -F, '
-{ # first pass
-  groups[ $1 ] =  $2
-  split( $2, items, " " )
-  for (item in items) {
-    items_in_groups[ items[item] ] = items_in_groups[ items[item] ] " " $1
+{ # cycle 1 - assign a CG coverage number
+  CGs[ $1 ] =  $2
+  split( $2, atoms, " " )
+  for (atom in atoms) {
+    atoms_in_CGs[ atoms[atom] ] = atoms_in_CGs[ atoms[atom] ] " " $1
   }
 }
-END {  # second pass
-  for ( group in groups ) {
-    split( groups[group], items, " " )
-    for ( item in items ) {
-      split( items_in_groups[ items[item] ] , in_groups, " " )
-      if (length( in_groups ) >= 2)  {
-        print group,groups[group],in_groups[1]
+END {  # cycle 2 - if there are >=2 atoms that match another CG coverage number,
+        # then assign CG coverage number to the first CG coverage number
+  for ( CG in CGs ) {
+    split( CGs[CG], atoms, " " )
+    for ( atom in atoms ) {
+      split( atoms_in_CGs[ atoms[atom] ] , in_CGs, " " )
+      if (length( in_CGs ) >= 2)  {
+        print CG,CGs[CG],in_CGs[1]
         break
       }
     }
