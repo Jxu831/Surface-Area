@@ -36,7 +36,8 @@ if len(sys.argv)==1:
 *        functional groups from input ligand            *
 *      __________________________________________       *
 *                     options:                          *
-*     --ligand, -l: input PDB ligand (required)         *
+*     --ligand, -l: input protonated                    *
+*                    PDB ligand (required)               *
 *     --ouput, -o: output name for ligand.txt file      *
 *                   "ligand.txt" if not specified;      *
 *                    "none" for no ligand.txt file      *
@@ -101,7 +102,7 @@ func_groups = [indole, phenol, ph, hip, his, gn, isopropyl, pro, ch3, csc, csh, 
 ########################################
 # Setting up file and SMARTS strings
 ########################################
-input = args.ligand
+input = scriptdir + '/' + args.ligand
 
 # Import mol2 ligand file
 #file = Chem.MolFromMol2File(input, removeHs=False) # Preserve the original Hs
@@ -135,7 +136,7 @@ for combs_groups in func_groups:
 
     # if no argument, make default: "ligand_CG_coords.txt"
     elif args.coords == None:
-        f = open("ligand_CG_coords.txt", "a")
+        f = open(scriptdir + "/ligand_CG_coords.txt", "a")
         for types in substruct:
             coords = Chem.MolFragmentToCXSmiles(file,types)
             print(var, types, coords, file=f)
@@ -144,7 +145,7 @@ for combs_groups in func_groups:
     # if specified, make custom-named text file
     else:
         output = args.coords
-        f = open(output, "a")
+        f = open(scriptdir + "/" + output, "a")
         for types in substruct:
             coords = Chem.MolFragmentToCXSmiles(file,types)
             print(var, types, coords, file=f)
@@ -161,7 +162,7 @@ for combs_groups in func_groups:
 # If -i is specified
 if args.image:
     # Image options
-    image = args.image
+    image = scriptdir + "/" + args.image
     IPythonConsole.drawOptions.addAtomIndices = True
     IPythonConsole.molSize = 300,300
 
@@ -171,7 +172,7 @@ if args.image:
         if len(substruct2) != 0:
             for group in substruct2:
                 i = 0
-                while os.path.exists(image+"%s.png" % i):
+                while os.path.exists(scriptdir + "/" + image+"%s.png" % i):
                     i += 1
 
                 # Make a label for the images using functional group variable names
@@ -187,7 +188,7 @@ if args.image:
                 d.drawOptions().addAtomIndices = True
                 d.DrawMolecule(file, highlightAtoms=highlights, legend=label)
                 d.FinishDrawing()
-                d.WriteDrawingText(image+"%s.png" % i)
+                d.WriteDrawingText(scriptdir + "/" + image+"%s.png" % i)
 
 ########################################
 # Parse the previously output file for matching atom names

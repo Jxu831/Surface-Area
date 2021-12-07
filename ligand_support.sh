@@ -25,9 +25,9 @@ echo "Making ligand CG file..."
 # Change the ligand coordinate file into a tab delimited tmp_LG.csv file
 while read -r p; do
   group=$(echo $p | awk -F'(' '{print $1}')
-  echo $p | awk -F'|' '{print $2}' | sed 's/\;/\n/g' | \
+  echo $p | awk -F'|' '{print $2}' | sed -e $'s/;/\\\n/g' | \
   awk -F '\t' -v group2=$group '{print $0","group2}'| \
-  sed -e 's/(/\n/g' | sed -e 's/)//' >> tmp_LG.csv
+  sed -e $'s/(/\\\n/g' | sed -e 's/)//' >> tmp_LG.csv
 done < $i
 
 # If no substructures are found, exit script here
@@ -355,7 +355,7 @@ END {  # cycle 2 - if there are >=2 atoms that match another CG coverage number,
     }
   }
 }
-' tmp_LG9.csv > tmp_LG10.csv
+' tmp_LG9.csv | sort -n > tmp_LG10.csv
 
 
 # Creating the ligand.txt files
@@ -397,4 +397,4 @@ else
 fi
 
 # Removes the temporary files from this script that were created
-rm tmp_LG*
+#rm tmp_LG*
