@@ -34,7 +34,7 @@ if len(sys.argv)==1:
 *        functional groups from input ligand            *
 *      __________________________________________       *
 *                     options:                          *
-*     --ligand, -l: input mol2 ligand (required)        *
+*     --ligand, -l: input PDB ligand (required)         *
 *     --ouput, -o: output name for ligand.txt file      *
 *                   "ligand.txt" if not specified;      *
 *                    "none" for no ligand.txt file      *
@@ -102,7 +102,8 @@ func_groups = [indole, phenol, ph, hip, his, gn, isopropyl, pro, ch3, csc, csh, 
 input = args.ligand
 
 # Import mol2 ligand file
-file = Chem.MolFromMol2File(input, removeHs=False) # Preserve the original Hs
+#file = Chem.MolFromMol2File(input, removeHs=False) # Preserve the original Hs
+file = Chem.MolFromPDBFile(input, removeHs=False)
 
 # SMARTS pattern of your input mol2
 ligand = Chem.MolToSmarts(file)

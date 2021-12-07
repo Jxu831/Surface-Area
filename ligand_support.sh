@@ -10,7 +10,7 @@ while getopts ":hi:l:o:" option; do
          exit;;
       i) # Enter the coords file
          i=$OPTARG;;
-      l) # Enter the ligand mol2 file
+      l) # Enter the ligand PDB file
          l=$OPTARG;;
       o) # Enter the ouput file name
          o=$OPTARG;;
@@ -291,9 +291,10 @@ $line" || {
     }
 done < tmp_LG_cg_coordinates.csv
 
-#rm tmp_LG8.csv
 echo " \n" > tmp_LG8.csv
-ligand_code=$(grep -A1 'ATOM' $l | grep -v 'ATOM' | awk -F' ' '{print $8}' | uniq)
+
+#ligand_code=$(grep -A1 'ATOM' $l | grep -v 'ATOM' | awk -F' ' '{print $8}' | uniq) # for mol2
+ligand_code=$(grep 'ATOM' $l | awk -F' ' '{print $4}' | uniq) # for PDB
 
 COUNTER=0
 for v in "${arr2[@]}"; do
@@ -301,7 +302,7 @@ for v in "${arr2[@]}"; do
    let COUNTER=COUNTER+1
    for i in $vs; do
       x_coord=$(echo $i | awk -F',' '{print $1}')
-      test=$(grep -e $x_coord $l | awk -F' ' '{print $2}')
+      test=$(grep -e $x_coord $l | awk -F' ' '{print $3}') # $2 for mol2
       other_info=$(echo $i | awk -F',' '{print $6,$5,$4}')
 
       # if the coordinate is in the ligand file, then add it to the output file
@@ -385,4 +386,4 @@ else
 fi
 
 # Removes the temporary files from this script that were created
-rm tmp_LG*
+#rm tmp_LG*
