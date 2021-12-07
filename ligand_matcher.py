@@ -19,6 +19,8 @@ from rdkit.Chem.Draw import IPythonConsole, rdMolDraw2D
 
 ####################
 #os.remove("ligand_CG_coords.txt")
+scriptdir = os.path.abspath(os.path.dirname(sys.argv[0]))
+print(scriptdir)
 
 # Parser and commandline options
 parser = argparse.ArgumentParser()

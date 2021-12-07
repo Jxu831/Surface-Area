@@ -297,20 +297,25 @@ echo " \n" > tmp_LG8.csv
 ligand_code=$(grep 'ATOM' $l | awk -F' ' '{print $4}' | uniq) # for PDB
 
 COUNTER=0
-for v in "${arr2[@]}"; do
-   vs=$(printf '%s\n' $v)
+for combs_groups_array in "${arr2[@]}"; do
+   CG_block=$(printf '%s\n' $combs_groups_array)
    let COUNTER=COUNTER+1
-   for i in $vs; do
-      x_coord=$(echo $i | awk -F',' '{print $1}')
-      test=$(grep -e $x_coord $l | awk -F' ' '{print $3}') # $2 for mol2
-      other_info=$(echo $i | awk -F',' '{print $6,$5,$4}')
+   for CG_line in $CG_block; do
+      x_coord=$(echo $CG_line | awk -F',' '{print $1}') # X-coord from input coords file
+      y_coord=$(echo $CG_line | awk -F',' '{print $2}') # Y-coord from input coords file
+      z_coord=$(echo $CG_line | awk -F',' '{print $3}') # Z-coord from input coords file
+
+      # If all three coordinates match your input PDB file, then print out the corresponding atom name
+      pdb_atom=$(grep -e $x_coord $l | grep -e $y_coord | grep -e $z_coord | awk -F' ' '{print $3}') # $2 for mol2
+
+      # Print out the other info that the script has already found --
+      other_info=$(echo $CG_line | awk -F',' '{print $6,$5,$4}')
 
       # if the coordinate is in the ligand file, then add it to the output file
-      # this removes the excess hydrogens atoms not in original file
-
+      # this removes the excess hydrogens atoms not in original file  -- there shouldn't be excess from RDKit though
       if grep -Fqe $x_coord $l
       then
-         echo $ligand_code $test $other_info $COUNTER
+         echo $ligand_code $pdb_atom $other_info $COUNTER
       fi
    done > tmp_LG8_unsorted.csv
    cat tmp_LG8_unsorted.csv | sort -k3,4
@@ -318,11 +323,17 @@ for v in "${arr2[@]}"; do
 
 done > tmp_LG8.csv
 
-#rm tmp_LG9.csv
+# Print out all of the atoms that correspond to the unique group number.
+# This will be used to find the ligand coverage number.
+# The next line of code prints out all of the atoms that correspond to the group number.
+# After that, we will loop through them to see if there are 2+ atoms that match between groups.
 awk '{print $6,$2}' tmp_LG8.csv | sort | uniq | awk '{if(a!=$1) {a=$1; printf "\n%s%s",$0,FS} else {a=$1;$1="";printf $0 }} END {printf "\n"}' | sed '/^$/d' | sed 's/ /,/' > tmp_LG9.csv
 
-#rm tmp_LG10.csv
-
+# This starts with the large ligand groups first (the order from the python script)
+# It assigns the unique atoms groups from largest to smallest, and as it reads through
+# the atom list file from the prior step, it will assign a CG coverage number to each CGs.
+# If it then comes across a new (smaller) group with 2 or more matching atoms,
+# then it will assign it to the same CG coverage number
 awk -F, '
 { # cycle 1 - assign a CG coverage number
   CGs[ $1 ] =  $2
@@ -349,14 +360,14 @@ END {  # cycle 2 - if there are >=2 atoms that match another CG coverage number,
 
 # Creating the ligand.txt files
 
-if [ -z "$o" ]; then
+if [ -z "$o" ]; then # If your output filename already exists,
    if [ -f "ligand.txt" ]; then
-      if [ -d "./old_files" ]; then
+      if [ -d "./old_files" ]; then   # then this will move it to "old_files/"
          echo "Ligand.txt already exists. Moving old file to old_files directory."
          mv ligand.txt ./old_files/
       else
          echo "Ligand.txt already exists. Moving old file to old_files directory."
-         mkdir ./old_files
+         mkdir ./old_files  # make the old_files directory if it is not already there
          mv ligand.txt ./old_files/
       fi
    fi
@@ -386,4 +397,4 @@ else
 fi
 
 # Removes the temporary files from this script that were created
-#rm tmp_LG*
+rm tmp_LG*
