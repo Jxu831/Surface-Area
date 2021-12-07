@@ -20,7 +20,7 @@ from rdkit.Chem.Draw import IPythonConsole, rdMolDraw2D
 ####################
 #os.remove("ligand_CG_coords.txt")
 scriptdir = os.path.abspath(os.path.dirname(sys.argv[0]))
-print(scriptdir)
+#print(scriptdir)
 
 # Parser and commandline options
 parser = argparse.ArgumentParser()
@@ -57,18 +57,18 @@ if args.coords == "none":
     print('Input ligand:', args.ligand, '\n'"No coordinates file.")
 elif args.coords == None:
     print('Input ligand:', args.ligand, '\n'"Output coordinate file: ligand_CG_coords.txt")
-    PATH = './ligand_CG_coords.txt'
+    PATH = scriptdir + '/ligand_CG_coords.txt'
     if os.path.isfile(PATH):
         print("File already exists. Moving previous ligand_CG_coords.txt to ./old_files")
-        PATH2 = './old_files/'
+        PATH2 = scriptdir + '/old_files/'
         isExist = os.path.exists(PATH2)
         # Directory does exist
         if isExist:
-            os.rename(PATH, './old_files/ligand_CG_coords.txt')
+            os.rename(PATH, scriptdir + '/old_files/ligand_CG_coords.txt')
         # Create a new directory because it does not exist
         if not isExist:
             os.mkdir(PATH2)
-            os.rename(PATH, './old_files/ligand_CG_coords.txt')
+            os.rename(PATH, '/old_files/ligand_CG_coords.txt')
 else:
     print('Input ligand:', args.ligand, '\n'"Output coordinate file:", args.coords)
 
